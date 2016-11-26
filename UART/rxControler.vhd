@@ -21,7 +21,8 @@ ENTITY rxControler IS
             parity     : uartParity_t := N;
             stop       : uartStop_t := 1
            );
-    PORT(clk, aNRst : IN  STD_LOGIC;
+    PORT(clk        : IN  STD_ULOGIC;
+         aNRst      : IN  STD_LOGIC;
          start      : IN  STD_LOGIC;
          tick       : IN  STD_LOGIC;
          count      : IN  STD_LOGIC_VECTOR(3 DOWNTO 0);
@@ -67,4 +68,3 @@ Transition : PROCESS(clk, aNRst) IS
               '0';
 
 END ARCHITECTURE mealy;
-

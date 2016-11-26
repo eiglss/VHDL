@@ -21,7 +21,8 @@ ENTITY uart IS
             parity      : uartParity_t := N;
             stop        : uartStop_t := 1
            );
-    PORT(clk, aNRst : IN  STD_LOGIC;
+    PORT(clk        : IN  STD_ULOGIC;
+         aNRst      : IN  STD_LOGIC;
          tick       : IN  STD_LOGIC;
          -- tx
          txDatReady : IN  STD_LOGIC;
@@ -56,27 +57,27 @@ BEGIN
 
     tx <= '1' WHEN iTxBusy = '0' OR aNRst = '0' ELSE
           iTx;
-          
+
     txBusy <= iTxBusy;
 
     dataTxN1_gen : IF parity = N AND stop = 1 GENERATE
     BEGIN
         iDataTx <= "1"&datIN&"0";
     END GENERATE;
-    
+
     dataTxN2_gen : IF parity = N AND stop = 2 GENERATE
     BEGIN
         iDataTx <= "11"&datIN&"0";
     END GENERATE;
-    
+
     dataTxOE1_gen : IF NOT(parity = N) AND stop = 1 GENERATE
         iDataTx <= "1"&TO_STDLOGICVECTOR(getParity(datIn, parity = E))&datIN&"0";
     END GENERATE;
-    
+
     dataTxOE2_gen : IF NOT(parity = N) AND stop = 2 GENERATE
         iDataTx <= "11"&TO_STDLOGICVECTOR(getParity(datIn, parity = E))&datIN&"0";
     END GENERATE;
- 
+
     txControler_ci : txControler
         GENERIC MAP(dataLength => dataLength,
                     parity     => parity,
@@ -119,7 +120,7 @@ BEGIN
                  serialOut  => iTx
                 );
 
- -- RX 
+ -- RX
 
     iRxStart <= '1' WHEN rx = '0' AND iRxBusy = '0' ELSE
                 '0';
@@ -153,7 +154,7 @@ BEGIN
                  dIn        => (OTHERS => '0'),
                  dOut       => iCountRx
                 );
- 
+
     rxShiftReg_ci : shiftRegister
         GENERIC MAP(length          => sel(parity = N, dataLength+stop,dataLength+1+stop),
                     rightNotLeft    => TRUE
@@ -169,28 +170,27 @@ BEGIN
                 );
 
     datOut <= iRxDatOut(dataLength-1 DOWNTO 0);
-    
+
     datReadyRxN1_gen : IF parity = N AND stop = 1 GENERATE
     BEGIN
         rxDatReady <= iRxDatReady WHEN iRxDatOut(dataLength) = '1' ELSE
                       '0';
     END GENERATE;
-    
+
     datReadyExN2_gen : IF parity = N AND stop = 2 GENERATE
     BEGIN
         rxDatReady <= iRxDatReady WHEN iRxDatOut(dataLength+1 DOWNTO dataLength) = "11" ELSE
                       '0';
     END GENERATE;
-    
+
     datReadyRxOE1_gen : IF NOT(parity = N) AND stop = 1 GENERATE
         rxDatReady <= iRxDatReady WHEN iRxDatOut(dataLength+1) = '1' AND iRxDatOut(dataLength DOWNTO dataLength) = TO_STDLOGICVECTOR(getParity(datIn, parity = E)) ELSE
                       '0';
     END GENERATE;
-    
+
     datReadyRxOE2_gen : IF NOT(parity = N) AND stop = 2 GENERATE
         rxDatReady <= iRxDatReady WHEN iRxDatOut(dataLength+1 DOWNTO dataLength) = "11" AND iRxDatOut(dataLength DOWNTO dataLength) = TO_STDLOGICVECTOR(getParity(datIn, parity = E)) ELSE
                       '0';
     END GENERATE;
 
 END Structural;
-

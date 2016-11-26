@@ -16,18 +16,19 @@ LIBRARY WORK;
 USE     WORK.uart_pkg.ALL;
 
 ENTITY txControler IS
-GENERIC(dataLength : uartLength_t := 8;
-        parity     : uartParity_t := N;
-        stop       : uartStop_t := 1
-       );
-PORT(clk, aNRst : IN  STD_LOGIC;
-     datReady   : IN  STD_LOGIC;
-     tick       : IN  STD_LOGIC;
-     count      : IN  STD_LOGIC_VECTOR(3 DOWNTO 0);
-     shEn       : OUT STD_LOGIC;
-     ldEn       : OUT STD_LOGIC;
-     txBusy     : OUT STD_LOGIC
-    );
+    GENERIC(dataLength : uartLength_t := 8;
+            parity     : uartParity_t := N;
+            stop       : uartStop_t := 1
+           );
+    PORT(clk        : IN  STD_ULOGIC;
+         aNRst      : IN  STD_LOGIC;
+         datReady   : IN  STD_LOGIC;
+         tick       : IN  STD_LOGIC;
+         count      : IN  STD_LOGIC_VECTOR(3 DOWNTO 0);
+         shEn       : OUT STD_LOGIC;
+         ldEn       : OUT STD_LOGIC;
+         txBusy     : OUT STD_LOGIC
+        );
 END ENTITY txControler;
 
 ARCHITECTURE mealy OF txControler IS
@@ -65,4 +66,3 @@ BEGIN
               '0';
 
 END ARCHITECTURE mealy;
-

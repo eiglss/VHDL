@@ -12,18 +12,17 @@ LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
 
 ENTITY shiftRegister IS
-GENERIC(length          : POSITIVE := 8;
-        rightNotLeft    : BOOLEAN := TRUE
-       );
-PORT(clk        : IN  STD_ULOGIC;
-     aNRst      : IN  STD_LOGIC;
-     shEn, ldEn : IN  STD_LOGIC;
-     serialIn   : IN  STD_LOGIC;
-     datIn      : IN  STD_LOGIC_VECTOR(length-1 DOWNTO 0);
-     datOut     : OUT STD_LOGIC_VECTOR(length-1 DOWNTO 0);
-     serialOut  : OUT STD_LOGIC
-     );
-END ENTITY shiftRegister;
+    GENERIC(length          : POSITIVE := 8;
+            rightNotLeft    : BOOLEAN := TRUE
+           );
+    PORT(clk, aNRst : IN  STD_LOGIC;
+         shEn, ldEn : IN  STD_LOGIC;
+         serialIn   : IN  STD_LOGIC;
+         datIn      : IN  STD_LOGIC_VECTOR(length-1 DOWNTO 0);
+         datOut     : OUT STD_LOGIC_VECTOR(length-1 DOWNTO 0);
+         serialOut  : OUT STD_LOGIC
+         );
+END ENTITY;
 
 ARCHITECTURE behavioral OF shiftRegister IS
     SIGNAL shReg : STD_LOGIC_VECTOR(length-1 DOWNTO 0);

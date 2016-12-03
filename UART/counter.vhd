@@ -1,5 +1,5 @@
 --******************************************************************************
---        @TITRE : genericCounter.vhd
+--        @TITRE : counter.vhd
 --      @VERSION : 0
 --     @CREATION : october, 2016
 -- @MODIFICATION :
@@ -8,12 +8,13 @@
 --      @LICENSE : MIT License (MIT)
 --******************************************************************************
 
+
 LIBRARY IEEE;
 USE     IEEE.STD_LOGIC_1164.ALL;
 USE     IEEE.NUMERIC_STD.ALL;
 
-ENTITY genericCounter IS
-    GENERIC(length      : POSITIVE := 8
+ENTITY counter IS
+    GENERIC(length  : POSITIVE := 8
            );
     PORT(clk                      : IN  STD_ULOGIC;
          aNRst                    : IN  STD_LOGIC;
@@ -21,15 +22,15 @@ ENTITY genericCounter IS
          dIn                      : IN  STD_LOGIC_VECTOR(length-1 DOWNTO 0);
          dOut                     : OUT STD_LOGIC_VECTOR(length-1 DOWNTO 0)
         );
-END genericCounter;
+END ENTITY;
 
-ARCHITECTURE Behavioral OF genericCounter IS
+ARCHITECTURE Behavioral OF counter IS
     SIGNAL countReg : UNSIGNED(length-1 DOWNTO 0);
 BEGIN
 
     dOut <= STD_LOGIC_VECTOR(countReg);
 
-    counter : PROCESS(clk, aNRst)
+    counter_p : PROCESS(clk, aNRst)
     BEGIN
         IF aNRst /= '1' THEN
             countReg <= (OTHERS => '0');
@@ -46,6 +47,6 @@ BEGIN
                 END IF;
             END IF;
         END IF;
-    END PROCESS counter;
+    END PROCESS counter_p;
 
 END Behavioral;

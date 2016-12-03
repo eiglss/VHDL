@@ -14,7 +14,6 @@ USE     IEEE.NUMERIC_STD.ALL;
 
 LIBRARY WORK;
 USE     WORK.uart_pkg.ALL;
-USE     WORK.generic_pkg.ALL;
 
 ENTITY uart IS
     GENERIC(dataLength  : uartLength_t := 8;
@@ -93,7 +92,7 @@ BEGIN
                  txBusy     => iTxBusy
                 );
 
-    txCounter_ci : genericCounter
+    txCounter_ci : counter
         GENERIC MAP(length  => 4
                    )
         PORT MAP(clk        => clk,
@@ -142,7 +141,7 @@ BEGIN
                  dataReady  => iRxDatReady
                 );
 
-    rxCounter_ci : genericCounter
+    rxCounter_ci : counter
         GENERIC MAP(length  => 4
                    )
         PORT MAP(clk        => clk,

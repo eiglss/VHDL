@@ -18,6 +18,11 @@ PACKAGE uart_pkg IS
     TYPE uartParity_t IS (N, E, O);
     SUBTYPE uartStop_t IS INTEGER RANGE 1 TO 2;
 
+    FUNCTION getParity(data : IN STD_LOGIC_VECTOR; even : IN BOOLEAN) RETURN STD_LOGIC;
+    FUNCTION sel(cond : BOOLEAN; ifTrue, ifFalse: INTEGER) RETURN INTEGER;
+    FUNCTION to_stdLogicVector(i: STD_LOGIC) RETURN STD_LOGIC_VECTOR;
+
+    -- uart component
     COMPONENT uart IS
         GENERIC(dataLength  : uartLength_t := 8;
                 parity      : uartParity_t := N;
@@ -39,6 +44,7 @@ PACKAGE uart_pkg IS
             );
     END COMPONENT;
 
+    -- additional component
     COMPONENT txControler IS
         GENERIC(dataLength : uartLength_t := 8;
                 parity     : uartParity_t := N;
@@ -53,7 +59,7 @@ PACKAGE uart_pkg IS
              ldEn       : OUT STD_LOGIC;
              txBusy     : OUT STD_LOGIC
             );
-        END COMPONENT;
+    END COMPONENT;
 
     COMPONENT rxControler IS
         GENERIC(dataLength : uartLength_t := 8;
@@ -69,6 +75,62 @@ PACKAGE uart_pkg IS
              rxBusy     : OUT STD_LOGIC;
              dataReady  : OUT STD_LOGIC
             );
-        END COMPONENT;
+    END COMPONENT;
+
+    COMPONENT shiftRegister IS
+        GENERIC(length          : POSITIVE := 8;
+                rightNotLeft    : BOOLEAN := TRUE
+               );
+        PORT(clk, aNRst : IN  STD_LOGIC;
+             shEn, ldEn : IN  STD_LOGIC;
+             serialIn   : IN  STD_LOGIC;
+             datIn      : IN  STD_LOGIC_VECTOR(length-1 DOWNTO 0);
+             datOut     : OUT STD_LOGIC_VECTOR(length-1 DOWNTO 0);
+             serialOut  : OUT STD_LOGIC
+             );
+    END COMPONENT;
+
+    COMPONENT counter IS
+        GENERIC(length  : POSITIVE := 8
+               );
+        PORT(clk                      : IN  STD_ULOGIC;
+             aNRst                    : IN  STD_LOGIC;
+             en, rst, incNotDec, load : IN  STD_LOGIC;
+             dIn                      : IN  STD_LOGIC_VECTOR(length-1 DOWNTO 0);
+             dOut                     : OUT STD_LOGIC_VECTOR(length-1 DOWNTO 0)
+            );
+    END COMPONENT;
+
+END uart_pkg;
+
+PACKAGE BODY uart_pkg IS
+
+    FUNCTION getParity(data : IN STD_LOGIC_VECTOR; even : IN BOOLEAN) RETURN STD_LOGIC IS
+        VARIABLE rtn : STD_LOGIC := '0';
+    BEGIN
+        FOR i IN data'RANGE LOOP
+            rtn := rtn XOR data(i);
+        END LOOP;
+        IF even THEN
+            RETURN rtn;
+        ELSE
+            RETURN NOt rtn;
+        END IF;
+    END FUNCTION;
+
+    FUNCTION sel(cond : BOOLEAN; ifTrue, ifFalse: INTEGER) RETURN INTEGER IS
+    BEGIN
+        IF cond THEN
+            RETURN(ifTrue);
+        ELSE
+            RETURN(ifFalse);
+        END IF;
+    END FUNCTION;
+
+    FUNCTION to_stdlogicvector(i: STD_LOGIC) RETURN STD_LOGIC_VECTOR IS
+        VARIABLE stdlv :STD_LOGIC_VECTOR(0 DOWNTO 0):= (0 => i);
+    BEGIN
+        RETURN stdlv;
+    END;
 
 END uart_pkg;

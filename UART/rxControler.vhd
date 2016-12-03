@@ -14,7 +14,6 @@ USE     IEEE.NUMERIC_STD.ALL;
 
 LIBRARY WORK;
 USE     WORK.uart_pkg.ALL;
-USE     WORK.generic_pkg.ALL;
 
 ENTITY rxControler IS
     GENERIC(dataLength : uartLength_t := 8;
